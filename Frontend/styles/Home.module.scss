@@ -1,0 +1,17 @@
+.header{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position:relative;
+
+  .connectWallet{
+    position:absolute;
+    right:10px;
+  }
+
+}
+
+.tasks{
+  display: flex;
+  justify-content: center;
+}
