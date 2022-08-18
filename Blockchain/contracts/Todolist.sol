@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.9;
+
+// import "hardhat/console.sol";
 
 contract Todolist {
     struct Todo {
@@ -21,17 +23,13 @@ contract Todolist {
 
     function getTodos() external view returns(Todo[] memory) {
         uint256[] memory TodosIds = relationOwnerId[msg.sender];
-        Todo[] memory todosFromAddress;
+        Todo[] memory todosFromAddress =  new Todo[](TodosIds.length);
 
         for(uint256 i = 0; i < TodosIds.length; i++) {
-            todosFromAddress[i] = todos[TodosIds[i]];
+          if(relationOwnerId[msg.sender][i] == todos[i].todoId) {
+                todosFromAddress[i] = todos[i];
+           }
         }
-
-       // for(uint256 i = 0; i <= id; i++) {
-        //   if(relationOwnerId[msg.sender][i] == todos[i].todoId) {
-        //        todosFromAddress[i] = todos[i];
-        //   }
-       // }
 
         return todosFromAddress;
     }
