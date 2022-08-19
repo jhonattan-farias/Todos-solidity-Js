@@ -1,9 +1,21 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useState } from 'react'
 import styles from '../styles/Home.module.scss'
 
 const Home: NextPage = () => {
+  const [inputTask,setInputTask] = useState('')
+
+  async function connectWallet() {
+    const { ethereum } = window;
+
+    if(!ethereum){
+      console.log("Metamask is not instaled")
+    }
+    console.log(ethereum)
+  }
+  
   return (
     <>
       <div className={styles.header}>
@@ -12,8 +24,26 @@ const Home: NextPage = () => {
         </div>
 
         <div className={styles.connectWallet}>
-          <button>Connect Wallet</button>
+          <button onClick={connectWallet}>Connect Wallet</button>
         </div>
+      </div>
+
+      <div className={styles.createTask}>
+        <form 
+          onSubmit={(event) => {
+            event.preventDefault()
+            setInputTask('')
+          }}
+        >
+          <input 
+            type="text" 
+            onChange={({target}) => {
+              setInputTask(target.value);
+            }} 
+            value={inputTask}
+          />
+          <button>Criar</button>
+        </form>
       </div>
 
       <div className={styles.tasks}>
@@ -25,7 +55,6 @@ const Home: NextPage = () => {
         </ul>
       </div>
     </>
-      
   )
 }
 
