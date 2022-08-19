@@ -14,21 +14,28 @@
 .createTask{
   display: flex;
   justify-content: center;
+  input{
+    margin-right:10px;
+  }
 }
 
 .tasks{
   display: flex;
   justify-content: center;
   ul {
-    width:70%;
+    max-width:70%;
+    min-width:calc(100vw - 50%);
     .task{
       display: flex;
       justify-content: space-between;
       padding:20px;
       border-radius: 10px;
-      background-color:rgb(255, 255, 255);
-      color: rgb(0, 0, 0);
+      background-color:rgb(46, 45, 45);
+      color: rgb(255, 255, 255);
       font-weight: bold;
+      & + li {
+        margin-top:10px;
+      }
     }
   }
 }

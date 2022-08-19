@@ -4,11 +4,23 @@ import Image from 'next/image'
 import { useState } from 'react'
 import styles from '../styles/Home.module.scss'
 
+interface TaskProps {
+  id:number;
+  task:string;
+  isCompleted:boolean;
+}
+
+const tasks:TaskProps[] = [
+  { id:0, task:'ler um livro', isCompleted:false },
+  { id:1, task:'correr pela manhã', isCompleted:false },
+  { id:2, task:'criar um contrato', isCompleted:true }
+]
+
 const Home: NextPage = () => {
   const [inputTask,setInputTask] = useState('')
 
   async function connectWallet() {
-    const { ethereum } = window;
+    const { ethereum }:any = window;
 
     if(!ethereum){
       console.log("Metamask is not instaled")
@@ -48,10 +60,15 @@ const Home: NextPage = () => {
 
       <div className={styles.tasks}>
         <ul>
-          <li className={styles.task}>
-            task 
-            <button>Completed</button>
-          </li>
+          { tasks.map(({ isCompleted, task, id }) => (
+            <li
+              key={id} 
+              className={styles.task}
+            >
+              <strong>{task}</strong>
+              { isCompleted ? 'Completed' : <button>Completed</button> }
+            </li>
+          )) }
         </ul>
       </div>
     </>
