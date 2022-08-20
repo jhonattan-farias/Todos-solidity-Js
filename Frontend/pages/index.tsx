@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import { useState } from 'react'
+import { ButtonHTMLAttributes, HtmlHTMLAttributes, useState } from 'react'
 import styles from '../styles/Home.module.scss'
 
 interface TaskProps {
@@ -10,33 +10,55 @@ interface TaskProps {
   isCompleted:boolean;
 }
 
-const tasks:TaskProps[] = [
-  { id:0, task:'ler um livro', isCompleted:false },
-  { id:1, task:'correr pela manhã', isCompleted:false },
-  { id:2, task:'criar um contrato', isCompleted:true }
-]
-
 const Home: NextPage = () => {
   const [inputTask,setInputTask] = useState('')
+  const [tasks,setTasks] = useState<TaskProps[]>([])
 
   async function connectWallet() {
-    const { ethereum }:any = window;
-
-    if(!ethereum){
-      console.log("Metamask is not instaled")
+    try{
+      const button = document.getElementsByClassName('connectWalletButton')[0] as HTMLButtonElement
+      const { ethereum }:any = window;
+      
+      if(!ethereum){
+        button.innerText = 'Install Metamask'
+      }
+      await ethereum.request({ method: 'eth_requestAccounts' });
+      const accounts = await ethereum.request({ method: 'eth_accounts' });
+      console.log(accounts)
+    } catch(err) {
     }
-    console.log(ethereum)
   }
+
+  function addTask() {
+    setTasks([
+      ...tasks, 
+      { task: inputTask, 
+        id: tasks.length++, 
+        isCompleted: false
+      }])
+  }
+
   
   return (
     <>
+    <Head>
+      <title>
+        Create Todos
+      </title>
+    </Head>
+
       <div className={styles.header}>
         <div className={styles.create}>
           <h1>Create your tasks!</h1>
         </div>
 
         <div className={styles.connectWallet}>
-          <button onClick={connectWallet}>Connect Wallet</button>
+          <button 
+            className='connectWalletButton' 
+            onClick={connectWallet}
+          >
+            Connect Wallet
+          </button>
         </div>
       </div>
 
@@ -45,6 +67,7 @@ const Home: NextPage = () => {
           onSubmit={(event) => {
             event.preventDefault()
             setInputTask('')
+            addTask()
           }}
         >
           <input 
@@ -68,7 +91,7 @@ const Home: NextPage = () => {
               <strong>{task}</strong>
               { isCompleted ? 'Completed' : <button>Completed</button> }
             </li>
-          )) }
+          ))}
         </ul>
       </div>
     </>
