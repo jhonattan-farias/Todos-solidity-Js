@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   position:relative;
+  color:white;
 
   .connectWallet{
     position:absolute;
@@ -14,8 +15,30 @@
 .createTask{
   display: flex;
   justify-content: center;
+
+  form{
+    display: flex;
+    justify-content: center;
+    width:25rem;
+    height: 30px;
+  }
+  
+  button {
+    background-color: #262626;
+    border:0;
+    border-radius: 0 10px 10px 0;
+
+    width:5rem;
+  }
+
   input{
-    margin-right:10px;
+    border:none;
+    outline: none;
+    margin-right:1px;
+    height: 100%;
+    width:100%;padding-left: 10px;
+    border-radius: 10px 0  0 10px;
+    background-color: #262626;
   }
 }
 
@@ -28,11 +51,28 @@
     .task{
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding:20px;
       border-radius: 10px;
-      background-color:rgb(46, 45, 45);
-      color: rgb(255, 255, 255);
+      background-color:#CCAD8F;
+      color: #262626;
       font-weight: bold;
+      button {
+        outline: 0;
+        background-color: #7EA3CC;
+        border:none;
+        padding:10px;
+        border-radius: 10px;
+        cursor:pointer;
+        transition: .4s;
+        &:hover{
+          background-color: #4989d1;
+          box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        }
+        &:active{
+          background-color: #1c77e0;
+        }
+      }
       & + li {
         margin-top:10px;
       }
