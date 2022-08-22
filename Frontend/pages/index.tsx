@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import { ButtonHTMLAttributes, HtmlHTMLAttributes, useState } from 'react'
+import { ButtonHTMLAttributes, FormEvent, HtmlHTMLAttributes, useEffect, useState } from 'react'
 import styles from '../styles/Home.module.scss'
 
 interface TaskProps {
@@ -22,22 +22,26 @@ const Home: NextPage = () => {
       if(!ethereum){
         button.innerText = 'Install Metamask'
       }
+
       await ethereum.request({ method: 'eth_requestAccounts' });
       const accounts = await ethereum.request({ method: 'eth_accounts' });
       console.log(accounts)
     } catch(err) {
+      console.log(err)
     }
   }
 
-  function addTask() {
-    setTasks([
-      ...tasks, 
-      { task: inputTask, 
+  function addTask(event:FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if(inputTask === '') return;
+
+    setTasks([...tasks,{ 
+        task: inputTask, 
         id: tasks.length++, 
         isCompleted: false
       }])
+    setInputTask('')
   }
-
   
   return (
     <>
@@ -65,19 +69,17 @@ const Home: NextPage = () => {
       <div className={styles.createTask}>
         <form 
           onSubmit={(event) => {
-            event.preventDefault()
-            setInputTask('')
-            addTask()
+            addTask(event)
           }}
         >
           <input 
             type="text" 
-            onChange={({target}) => {
+            onChange={({ target }) => {
               setInputTask(target.value);
             }} 
             value={inputTask}
           />
-          <button>Criar</button>
+          <button>Create</button>
         </form>
       </div>
 
