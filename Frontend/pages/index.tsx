@@ -26,7 +26,7 @@ const Home: NextPage = () => {
 
       await ethereum.request({ method: 'eth_requestAccounts' });
       const accounts = await ethereum.request({ method: 'eth_accounts' });
-      setConnectedAccount(accounts[0] ? accounts[0] : '')
+      setConnectedAccount(accounts[0])
       
     } catch(err) {
       console.log(err)
@@ -63,7 +63,7 @@ const Home: NextPage = () => {
             className='connectWalletButton' 
             onClick={connectWallet}
           >
-            {connectedAccount === '' ? 'Connect Wallet' : connectedAccount}
+            {connectedAccount === '' ? 'Connect Wallet' : connectedAccount.slice(0,9) + '...'}
           </button>
         </div>
       </div>
