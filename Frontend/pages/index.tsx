@@ -13,6 +13,7 @@ interface TaskProps {
 const Home: NextPage = () => {
   const [inputTask,setInputTask] = useState('')
   const [tasks,setTasks] = useState<TaskProps[]>([])
+  const [connectedAccount,setConnectedAccount] = useState('')
 
   async function connectWallet() {
     try{
@@ -25,7 +26,8 @@ const Home: NextPage = () => {
 
       await ethereum.request({ method: 'eth_requestAccounts' });
       const accounts = await ethereum.request({ method: 'eth_accounts' });
-      console.log(accounts)
+      setConnectedAccount(accounts[0] ? accounts[0] : '')
+      
     } catch(err) {
       console.log(err)
     }
@@ -61,7 +63,7 @@ const Home: NextPage = () => {
             className='connectWalletButton' 
             onClick={connectWallet}
           >
-            Connect Wallet
+            {connectedAccount === '' ? 'Connect Wallet' : connectedAccount}
           </button>
         </div>
       </div>
