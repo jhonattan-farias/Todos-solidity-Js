@@ -4,6 +4,8 @@ import Image from 'next/image'
 import { ButtonHTMLAttributes, FormEvent, HtmlHTMLAttributes, useEffect, useState } from 'react'
 import styles from '../styles/Home.module.scss'
 
+import{ ethers } from 'ethers'
+
 interface TaskProps {
   id:number;
   task:string;
@@ -24,9 +26,11 @@ const Home: NextPage = () => {
         button.innerText = 'Install Metamask'
       }
 
-      await ethereum.request({ method: 'eth_requestAccounts' });
-      const accounts = await ethereum.request({ method: 'eth_accounts' });
-      setConnectedAccount(accounts[0])
+      const provider = new ethers.providers.Web3Provider(ethereum)
+      await provider.send('eth_requestAccounts',[])
+
+      const signer = provider.getSigner()
+      setConnectedAccount(await signer.getAddress())
       
     } catch(err) {
       console.log(err)
@@ -40,7 +44,7 @@ const Home: NextPage = () => {
     setTasks([...tasks,{ 
         task: inputTask, 
         id: tasks.length++, 
-        isCompleted: false
+        isCompleted: true
       }])
     setInputTask('')
   }
@@ -63,7 +67,7 @@ const Home: NextPage = () => {
             className='connectWalletButton' 
             onClick={connectWallet}
           >
-            {connectedAccount === '' ? 'Connect Wallet' : connectedAccount.slice(0,9) + '...'}
+            {connectedAccount === '' ? 'Connect Wallet' : connectedAccount.slice(0,7) + '...'}
           </button>
         </div>
       </div>
