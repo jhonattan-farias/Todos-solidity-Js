@@ -5,13 +5,10 @@ async function main() {
   const todoList = await TodoList.deploy()
 
   await todoList.deployed()
-  await todoList.addTodo("ler um livro")
-  await todoList.addTodo("ler dois")
-  await todoList.addTodo("ler treis livro")
 
   const todos = await todoList.getTodos()
 
-  console.log(todos)
+  console.log(todoList.address)
 }
 
 // We recommend this pattern to be able to use async/await everywhere

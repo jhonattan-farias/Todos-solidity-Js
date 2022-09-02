@@ -1,10 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
-import { ButtonHTMLAttributes, FormEvent, HtmlHTMLAttributes, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import styles from '../styles/Home.module.scss'
 
 import{ ethers } from 'ethers'
+import { abi } from '../../Blockchain/artifacts/contracts/Todolist.sol/Todolist.json'
 
 interface TaskProps {
   id:number;
@@ -14,24 +14,27 @@ interface TaskProps {
 
 const Home: NextPage = () => {
   const [inputTask,setInputTask] = useState('')
-  const [tasks,setTasks] = useState<TaskProps[]>([])
   const [connectedAccount,setConnectedAccount] = useState('')
-
+  const [tasks,setTasks] = useState<TaskProps[]>([])
+  const [provider,setProvider] = useState<ethers.providers.Web3Provider | any >({})
+  
   async function connectWallet() {
     try{
-      const button = document.getElementsByClassName('connectWalletButton')[0] as HTMLButtonElement
-      const { ethereum }:any = window;
-      
-      if(!ethereum){
-        button.innerText = 'Install Metamask'
+      if(provider){
+        await provider.send('eth_requestAccounts',[])
+        
+        const signer = provider.getSigner()
+        setConnectedAccount(await signer.getAddress())
       }
+    } catch(err) {
+      console.log(err)
+    }
+  }
 
-      const provider = new ethers.providers.Web3Provider(ethereum)
-      await provider.send('eth_requestAccounts',[])
-
-      const signer = provider.getSigner()
-      setConnectedAccount(await signer.getAddress())
-      
+  async function connectContract() {
+    try{
+      const contractAddress = '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9'
+      const contract = new ethers.Contract(contractAddress,abi,provider)
     } catch(err) {
       console.log(err)
     }
@@ -39,8 +42,8 @@ const Home: NextPage = () => {
 
   function addTask(event:FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    connectContract()
     if(inputTask === '') return;
-
     setTasks([...tasks,{ 
         task: inputTask, 
         id: tasks.length++, 
@@ -48,6 +51,18 @@ const Home: NextPage = () => {
       }])
     setInputTask('')
   }
+
+  useEffect(() => {
+    const button = document.getElementsByClassName('connectWalletButton')[0] as HTMLButtonElement
+    const { ethereum }:any = window;
+
+    if(!ethereum){
+      button.innerText = 'Install Metamask'
+    }
+
+    const provider = new ethers.providers.Web3Provider(ethereum)
+    setProvider(provider)
+  },[])
   
   return (
     <>
@@ -67,7 +82,7 @@ const Home: NextPage = () => {
             className='connectWalletButton' 
             onClick={connectWallet}
           >
-            {connectedAccount === '' ? 'Connect Wallet' : connectedAccount.slice(0,7) + '...'}
+            {connectedAccount === '' ? 'Connect Wallet' : connectedAccount.slice(0,5) + '...' + connectedAccount.slice(connectedAccount.length -4)}
           </button>
         </div>
       </div>
