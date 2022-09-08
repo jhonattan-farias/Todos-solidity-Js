@@ -12,17 +12,18 @@ interface TaskProps {
   isCompleted:boolean;
 }
 
+type ContractFunctionsTypes = 'addTodo' | 'getTodos' | 'completeTodos';
+
 const Home: NextPage = () => {
   const [inputTask,setInputTask] = useState('')
-  const [connectedAccount,setConnectedAccount] = useState('')
+  const [connectedAddress,setConnectedAccount] = useState('')
   const [tasks,setTasks] = useState<TaskProps[]>([])
-  const [provider,setProvider] = useState<ethers.providers.Web3Provider | any >({})
+  let provider:ethers.providers.Web3Provider;
   
   async function connectWallet() {
     try{
       if(provider){
         await provider.send('eth_requestAccounts',[])
-        
         const signer = provider.getSigner()
         setConnectedAccount(await signer.getAddress())
       }
@@ -31,10 +32,14 @@ const Home: NextPage = () => {
     }
   }
 
-  async function connectContract() {
+  async function connectContract(caller:ContractFunctionsTypes = 'addTodo') {
+    const signer = provider.getSigner()
+    console.log(provider)
     try{
-      const contractAddress = '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9'
-      const contract = new ethers.Contract(contractAddress,abi,provider)
+      const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+      const contract = new ethers.Contract(contractAddress,abi,signer)
+      const response = await contract.addTodo('carro 1')
+      console.log(response)
     } catch(err) {
       console.log(err)
     }
@@ -60,8 +65,8 @@ const Home: NextPage = () => {
       button.innerText = 'Install Metamask'
     }
 
-    const provider = new ethers.providers.Web3Provider(ethereum)
-    setProvider(provider)
+    const newProvider = new ethers.providers.Web3Provider(ethereum)
+    provider = newProvider
   },[])
   
   return (
@@ -82,7 +87,7 @@ const Home: NextPage = () => {
             className='connectWalletButton' 
             onClick={connectWallet}
           >
-            {connectedAccount === '' ? 'Connect Wallet' : connectedAccount.slice(0,5) + '...' + connectedAccount.slice(connectedAccount.length -4)}
+            {connectedAddress === '' ? 'Connect Wallet' : connectedAddress.slice(0,5) + '...' + connectedAddress.slice(connectedAddress.length -4)}
           </button>
         </div>
       </div>
