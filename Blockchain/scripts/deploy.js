@@ -8,7 +8,7 @@ async function main() {
 
   const todos = await todoList.getTodos()
 
-  console.log(todoList.address)
+  console.log(todos)
 }
 
 // We recommend this pattern to be able to use async/await everywhere
