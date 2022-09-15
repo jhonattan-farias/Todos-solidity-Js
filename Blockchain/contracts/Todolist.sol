@@ -34,13 +34,6 @@ contract Todolist {
         return todosFromAddress;
     }
 
-    function getTodosX() external pure returns(Todo[] memory) {
-        Todo[] memory newTodos = new Todo[](1);
-        Todo memory newTodo = Todo('asd',false,1);
-        newTodos[0] = newTodo; 
-        return newTodos;
-    }
-
     function completeTodo(uint256 _id) external {
         require(relationOwnerId[msg.sender][_id] == _id, "You're not the owner of this Todo");        
         todos[_id].isCompleted = true;
