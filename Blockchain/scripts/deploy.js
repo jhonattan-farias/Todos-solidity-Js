@@ -6,9 +6,13 @@ async function main() {
 
   await todoList.deployed()
 
-  const todos = await todoList.getTodos()
+  await todoList.addTodo('1')  
+  await todoList.addTodo('2')  
+  await todoList.addTodo('3')
 
+  const todos = await todoList.getTodosX()
   console.log(todos)
+  console.log(todoList.address)
 }
 
 // We recommend this pattern to be able to use async/await everywhere

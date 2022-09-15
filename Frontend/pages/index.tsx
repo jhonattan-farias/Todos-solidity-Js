@@ -15,13 +15,18 @@ interface TaskProps {
 type ContractFunctionsTypes = 'addTodo' | 'getTodos' | 'completeTodos';
 
 const Home: NextPage = () => {
-  const [inputTask,setInputTask] = useState('')
+ // const [inputTask,setInputTask] = useState('')
   const [connectedAddress,setConnectedAccount] = useState('')
-  const [tasks,setTasks] = useState<TaskProps[]>([])
-  let provider:ethers.providers.Web3Provider;
+  // const [tasks,setTasks] = useState<TaskProps[]>([])
+  // let contract:ethers.Contract;
   
   async function connectWallet() {
     try{
+      const { ethereum }:any = window
+      if(!ethereum) return;
+
+      const provider = new ethers.providers.Web3Provider(ethereum)
+      
       if(provider){
         await provider.send('eth_requestAccounts',[])
         const signer = provider.getSigner()
@@ -33,19 +38,26 @@ const Home: NextPage = () => {
   }
 
   async function connectContract(caller:ContractFunctionsTypes = 'addTodo') {
-    const signer = provider.getSigner()
-    console.log(provider)
     try{
+      const { ethereum }:any = window
+
+      const provider = new ethers.providers.Web3Provider(ethereum)
+
+      const signer = provider.getSigner()
       const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
       const contract = new ethers.Contract(contractAddress,abi,signer)
-      const response = await contract.addTodo('carro 1')
+      console.log(contract)
+      const response = await contract.addTodo('fnksdnf')
       console.log(response)
+      // const todos = await contract[10]() 
+      const todos = await contract.getTodosX()
+      console.log(todos)
     } catch(err) {
       console.log(err)
     }
   }
 
-  function addTask(event:FormEvent<HTMLFormElement>) {
+   /* function addTask(event:FormEvent<HTMLFormElement>) {
     event.preventDefault()
     connectContract()
     if(inputTask === '') return;
@@ -56,6 +68,7 @@ const Home: NextPage = () => {
       }])
     setInputTask('')
   }
+  */
 
   useEffect(() => {
     const button = document.getElementsByClassName('connectWalletButton')[0] as HTMLButtonElement
@@ -64,9 +77,7 @@ const Home: NextPage = () => {
     if(!ethereum){
       button.innerText = 'Install Metamask'
     }
-
-    const newProvider = new ethers.providers.Web3Provider(ethereum)
-    provider = newProvider
+    
   },[])
   
   return (
@@ -87,31 +98,30 @@ const Home: NextPage = () => {
             className='connectWalletButton' 
             onClick={connectWallet}
           >
-            {connectedAddress === '' ? 'Connect Wallet' : connectedAddress.slice(0,5) + '...' + connectedAddress.slice(connectedAddress.length -4)}
+            { connectedAddress === '' 
+              ? 'Connect Wallet' 
+              : connectedAddress.slice(0,5) + '...' + connectedAddress.slice(connectedAddress.length -4)
+            }
           </button>
         </div>
       </div>
 
       <div className={styles.createTask}>
-        <form 
-          onSubmit={(event) => {
-            addTask(event)
-          }}
-        >
+        <form onSubmit={(event) => event.preventDefault()}>
           <input 
             type="text" 
             onChange={({ target }) => {
-              setInputTask(target.value);
+             // setInputTask(target.value);
             }} 
-            value={inputTask}
+            // value={inputTask}
           />
-          <button>Create</button>
+          <button onClick={() => connectContract()}>Create</button>
         </form>
       </div>
 
       <div className={styles.tasks}>
         <ul>
-          { tasks.map(({ isCompleted, task, id }) => (
+          { /*tasks.map(({ isCompleted, task, id }) => (
             <li
               key={id} 
               className={styles.task}
@@ -119,7 +129,7 @@ const Home: NextPage = () => {
               <strong>{task}</strong>
               { isCompleted ? 'Completed' : <button>Completed</button> }
             </li>
-          ))}
+          )) */}
         </ul>
       </div>
     </>

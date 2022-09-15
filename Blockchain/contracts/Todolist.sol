@@ -23,7 +23,7 @@ contract Todolist {
 
     function getTodos() external view returns(Todo[] memory) {
         uint256[] memory TodosIds = relationOwnerId[msg.sender];
-        Todo[] memory todosFromAddress =  new Todo[](TodosIds.length);
+        Todo[] memory todosFromAddress = new Todo[](TodosIds.length);
 
         for(uint256 i = 0; i < TodosIds.length; i++) {
           if(relationOwnerId[msg.sender][i] == todos[i].todoId) {
@@ -32,6 +32,13 @@ contract Todolist {
         }
 
         return todosFromAddress;
+    }
+
+    function getTodosX() external pure returns(Todo[] memory) {
+        Todo[] memory newTodos = new Todo[](1);
+        Todo memory newTodo = Todo('asd',false,1);
+        newTodos[0] = newTodo; 
+        return newTodos;
     }
 
     function completeTodo(uint256 _id) external {
